@@ -24,6 +24,8 @@ if (!file.exists("./activity.csv")) {
 }
 ```
 
+![Plot1](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot1.png)
+
 Next we need to read the data into R. We'll save it in a variable named actmon
 (activity monitor).
 
