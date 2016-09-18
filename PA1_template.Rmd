@@ -1,12 +1,11 @@
----
-title: "Reproduceable Research - Assignment 1"
-output: html_document
----
+
+#Reproduceable Research - Assignment 1
+
 
 ```{r setup, include=TRUE}
 ```
 
-#Loading and preprocessing the data
+##Loading and preprocessing the data
 
 **Load the data**
   
@@ -44,7 +43,7 @@ actmon$steps <- as.numeric(actmon$steps)
 ```
 
 
-# Task 1: Determine the average number of steps taken per day.  
+##Task 1: Determine the average number of steps taken per day.  
 
 *Note: The instructions state we can ignore the missing values for this part of*
 *the assignment. For that reason, we will use only complete cases from the*
@@ -90,7 +89,7 @@ print(atsteps)
 print(mtsteps)
 ```
 
-#Task 2: Identify average daily activity patterns
+##Task 2: Identify average daily activity patterns
 
 **Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the**
 **average number of steps taken, averaged across all days (y-axis)**
@@ -119,7 +118,7 @@ mxstep <- dayact[which.max(dayact$x),]
 print(mxstep)
 ```
 
-# Task 3: Imput Missing Values
+##Task 3: Imput Missing Values
 
 **Calculate and report the total number of missing values in the dataset**
 
@@ -199,7 +198,7 @@ for each interval where the data was missing. It appears the range of intervals
 between 1000 and 1100 also is where we had the greatest number of NAs because
 its where we see the largest change from the first plot. 
 
-#Task 4: Identify differences in activity patterns between weekdays and weekends.
+##Task 4: Identify differences in activity patterns between weekdays and weekends.
 
 **Create a new factor variable in the dataset with two levels - "weekday" and**
 **"weekend" indicating whether a given date is a weekday or weekend day.**
