@@ -79,7 +79,7 @@ hist(tsteps$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency",
 **Calculate and report the mean and median of the total number of steps taken**
 **per day**
 
-We can find the mean (10766.19) and median (10765) of the data with their
+We can find the mean **(10766.19)** and median **(10765)** of the data with their
 respective functions.
 
 ```{r, echo=TRUE}
@@ -111,7 +111,7 @@ plot(x=dayact$Interval, y=dayact$x, type="l", xlab="5 Minute Interval",
 
 We can identify the interval containing the greatest average number of steps
 by using the which function and simple subsetting code. We'll save the
-answer (835) in the variable mxstep (maximum steps) and print it.
+answer **(835)** in the variable mxstep (maximum steps) and print it.
 
 ```{r, echo=TRUE}
 mxstep <- dayact[which.max(dayact$x),]
@@ -123,7 +123,7 @@ print(mxstep)
 **Calculate and report the total number of missing values in the dataset**
 
 We can determine the number of missing values with the sum and is.na
-functions. We'll save the answer (2304) in the variable misno (missing numbers).
+functions. We'll save the answer **(2304)** in the variable misno (missing numbers).
 
 ```{r, echo=TRUE}
 misno <- sum(is.na(actmon))
