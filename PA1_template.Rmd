@@ -1,6 +1,6 @@
 ---
 title: "Reproduceable Research - Assignment 1"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=TRUE}
@@ -69,7 +69,7 @@ tsteps <- aggregate(comactmon$steps, list(Day=comactmon$date), sum)
 The histogram function shows five (5) bars unless otherwise specified. If we
 set break=25, we can better and more accurately depict the data.
 
-```{r, echo=TRUE}
+```{r, histogram, fig.height=6, echo=TRUE}
 library(datasets)
 hist(tsteps$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency", 
      main= "Histogram of Total Steps per Day")
@@ -97,7 +97,7 @@ We can apply the aggregate function to the complete cases to find the average
 number of steps for each interval. We will plot this data with the base
 plot system.
 
-```{r, echo=TRUE}
+```{r, time series, fig.height=6, echo=TRUE}
 dayact <- aggregate(comactmon$steps, list(Interval=comactmon$interval), mean)
 plot(x=dayact$Interval, y=dayact$x, type="l", xlab="5 Minute Interval",
      ylab="Average Number of Steps", main="Average Number of Steps")
@@ -164,7 +164,7 @@ Next we'll find the sum of the steps (with the average values in place of the
 NAs) and create a histogram depicting the new data. As before, breaks=25
 to better depict the information.
 
-```{r, echo=TRUE}
+```{r, fig.height=6, echo=TRUE}
 filldata <- aggregate(filldata$steps, list(Day=filldata$date), sum)
 library(datasets)
 hist(filldata$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency", 
@@ -242,15 +242,10 @@ colnames(d) <- c("Interval", "Weekday_Average", "Weekend_Average")
 
 Since we need to make a panel plot, we have to specify the number of rows and
 columns required to display the charts. Otherwise, R will display only the last
-plot we write code for.
+plot we write code for. We also need to set the fig.height and fig.width
+to appropriate values so that the plots are readable.
 
-*Note: If not directed to construct a panel plot of time series, I would have*
-*made two separate plots. I did so as a test and the result looked considerably*
-*better because the plots had room to fill the page horizontally.*
-*I've included them as a panel plot nonetheless because its what the*
-*instructions called for.*
-
-```{r, echo=TRUE}
+```{r, fig.height=5, fig.width=9, echo=TRUE}
  par(mfrow=c(1,2))
   plot(d$Interval, d$Weekday_Average, type="l", xlab = "5-Minute Interval", 
      main = "Weekday Activity Patterns", 
