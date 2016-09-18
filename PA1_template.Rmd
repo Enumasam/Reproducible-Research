@@ -1,0 +1,269 @@
+---
+title: "Reproduceable Research - Assignment 1"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+```
+
+#Loading and preprocessing the data
+
+**Load the data**
+  
+Before processing the data, we need to load it into R.
+We'll download and unzip the data if it is not already in the working
+directory.
+
+```{r, echo=TRUE}
+
+if (!file.exists("./activity.csv")) {
+  fileUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+  download.file(fileUrl, destfile = "activity_monitoring_data.zip")
+  dateDownloaded <- date()
+  unzip("activity_monitoring_data.zip")
+}
+```
+
+Next we need to read the data into R. We'll save it in a variable named actmon
+(activity monitor).
+
+```{r, echo=TRUE}
+actmon <- read.csv("activity.csv")
+```
+
+**Process/transform the data into a format suitable for your analysis**
+
+We need to make two changes to the data before moving forward. Since the
+date column is a factor, we must change the class to date. We also need to
+convert the steps class from integer to numeric so that we can make the
+requisite histograms.  
+
+```{r, echo=TRUE}
+actmon$date <- as.Date(actmon$date)
+actmon$steps <- as.numeric(actmon$steps)
+```
+
+
+# Task 1: Determine the average number of steps taken per day.  
+
+*Note: The instructions state we can ignore the missing values for this part of*
+*the assignment. For that reason, we will use only complete cases from the*
+*dataset. We will save the data in a varible called comactmon (complete*
+*cases activity monitor).*
+
+```{r, echo=TRUE}
+comactmon <- actmon[complete.cases(actmon),]
+```
+
+**Calculate total number of steps per day**
+
+We can use the aggregate function to calculate the sum of the steps per day.
+We'll save this data in the tsteps (total steps) variable.
+
+```{r, echo=TRUE}
+tsteps <- aggregate(comactmon$steps, list(Day=comactmon$date), sum)
+```
+
+**Make a histogram of the total number of steps taken each day**
+
+The histogram function shows five (5) bars unless otherwise specified. If we
+set break=25, we can better and more accurately depict the data.
+
+```{r, echo=TRUE}
+library(datasets)
+hist(tsteps$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency", 
+     main= "Histogram of Total Steps per Day")
+```
+
+**Calculate and report the mean and median of the total number of steps taken**
+**per day**
+
+We can find the mean (10766.19) and median (10765) of the data with their
+respective functions.
+
+```{r, echo=TRUE}
+atsteps <- mean(tsteps$x)
+mtsteps <- median(tsteps$x)
+print(atsteps)
+print(mtsteps)
+```
+
+#Task 2: Identify average daily activity patterns
+
+**Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the**
+**average number of steps taken, averaged across all days (y-axis)**
+
+We can apply the aggregate function to the complete cases to find the average
+number of steps for each interval. We will plot this data with the base
+plot system.
+
+```{r, echo=TRUE}
+dayact <- aggregate(comactmon$steps, list(Interval=comactmon$interval), mean)
+plot(x=dayact$Interval, y=dayact$x, type="l", xlab="5 Minute Interval",
+     ylab="Average Number of Steps", main="Average Number of Steps")
+```
+
+**Which 5-minute interval, on average across all the days in the dataset,**
+**contains the maximum number of steps?**
+
+We can identify the interval containing the greatest average number of steps
+by using the which function and simple subsetting code. We'll save the
+answer (835) in the variable mxstep (maximum steps) and print it.
+
+```{r, echo=TRUE}
+mxstep <- dayact[which.max(dayact$x),]
+print(mxstep)
+```
+
+# Task 3: Imput Missing Values
+
+**Calculate and report the total number of missing values in the dataset**
+
+We can determine the number of missing values with the sum and is.na
+functions. We'll save the answer (2304) in the variable misno (missing numbers).
+
+```{r, echo=TRUE}
+misno <- sum(is.na(actmon))
+print(misno)
+```
+
+**Devise a strategy for filling in all of the missing values in the dataset.**
+**The strategy does not need to be sophisticated. For example, you could use**
+**the mean/median for that day, or the mean for that 5-minute interval, etc.**
+
+Using the complete cases function, we can isolate the rows that are missing
+steps data (are filled with NAs). We will then take the average of the steps
+for each interval from the complete cases and replace the NAs with the
+averages. This means if the interval is 5, the NA will be replaced with the 
+average value for the data collected at interval 5. We will store this
+information in the variable nas (NAs) in the steps column.
+
+```{r, echo=TRUE}
+newdata <- actmon
+nas <- newdata[!complete.cases(newdata),]
+avg <- tapply(newdata$steps, newdata$interval, mean, na.rm=TRUE, simplify=TRUE)
+nas$steps <- c(avg)
+```
+
+**Create a new dataset that is equal to the original dataset but with the**
+**missing data filled in**
+
+We will merge the complete cases and nas datasets to create a new variable
+called filldata. This data frame is almost the same as the data we
+originally loaded into R. The only difference is we replaced all of the NAs
+with average values by interval.
+
+```{r, echo=TRUE}
+filldata <- rbind(comactmon, nas)
+```
+
+**Make a histogram of the total number of steps taken each day and calculate**
+**and report the mean and median total number of steps taken per day.** 
+
+Next we'll find the sum of the steps (with the average values in place of the
+NAs) and create a histogram depicting the new data. As before, breaks=25
+to better depict the information.
+
+```{r, echo=TRUE}
+filldata <- aggregate(filldata$steps, list(Day=filldata$date), sum)
+library(datasets)
+hist(filldata$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency", 
+     main= "Histogram of Total Steps per Day, NAs replaced")
+```
+
+As before, we can find the mean (10766.19) and median (10766.19) of the data
+with their respective functions.
+
+```{r, echo=TRUE}
+afill <- mean(filldata$x)
+mfill <- median(filldata$x)
+print(afill)
+print(mfill)
+```
+
+**Do these values differ from the estimates from the first part of the**
+**assignment? What is the impact of imputing missing data on the estimates**
+**of the total daily number of steps?**
+
+We can see the values differ from those in the first part of the assignment.
+The plots show the frequency of steps at the intervals between 1000 and 1100
+increased by approximately 60%. The impact is clear - it skewed the data
+toward the trends that were in the earlier plot because we added the averages
+for each interval where the data was missing. It appears the range of intervals
+between 1000 and 1100 also is where we had the greatest number of NAs because
+its where we see the largest change from the first plot. 
+
+#Task 4: Identify differences in activity patterns between weekdays and weekends.
+
+**Create a new factor variable in the dataset with two levels - "weekday" and**
+**"weekend" indicating whether a given date is a weekday or weekend day.**
+
+We need to create two new fields in our data frame - one for the day of the week
+and another identifying if the day refers to a weekday or weekend.
+Applying the weekday function to the wd (weekday) column yields the day of the
+week. we can then use as.factor() to set two levels - weekday and weekend - 
+and apply the weekend factor to Sunday and Saturday, and the weekday factor
+only to the other days.
+
+*Note: This took a few tries - I hadn't had to determine whether dates*
+*refer to weekdays or weekends before. I made a few errors while sorting it out.*
+*I ultimately decided to create a new variable called newdata because my code*
+*was creating errors in the comactmon data frame and I had to rerun scripts* 
+*from earlier tasks. Though less efficient, it made writing the code easier.*
+
+```{r, echo=TRUE}
+newdata <- comactmon
+newdata$wd <- weekdays(comactmon$date)
+newdata$facwd <- as.factor(c("weekday", "weekend"))
+newdata[newdata$wd == "Sunday" | newdata$wd == "Saturday" ,5]<- factor("weekend")
+newdata[!(newdata$wd == "Sunday" | newdata$wd == "Saturday"),5 ]<- factor("weekday")
+```
+
+Next we need to calculate the average steps by interval for each factor - 
+weekdays and weekends. We can subset the data into avg_we (average for
+weekends) and avg_wd (average for weekdays) by referencing the facwd data field
+we added in the previous step. Then we can again use the aggregate function
+to calculate the average steps for each interval. Finally, we can create
+a new data frame with three fields (interval, weekday average, and weekend
+average), which we will use to build a time series plot.
+
+```{r, echo=TRUE}
+avg_we <- subset(newdata, facwd == "weekend") 
+avg_wd <- subset(newdata, facwd == "weekday") 
+avg_we <- aggregate(avg_we$steps, list(Interval=avg_we$interval), mean)
+avg_wd <- aggregate(avg_wd$steps, list(Interval=avg_wd$interval), mean)
+d <- data.frame(avg_wd$Interval, avg_wd$x, avg_we$x)
+colnames(d) <- c("Interval", "Weekday_Average", "Weekend_Average")
+```
+
+**Make a panel plot containing a time series plot (i.e. type = "l") of the**
+**5-minute interval (x-axis) and the average number of steps taken, averaged**
+**across all weekday days or weekend days (y-axis).**
+
+Since we need to make a panel plot, we have to specify the number of rows and
+columns required to display the charts. Otherwise, R will display only the last
+plot we write code for.
+
+*Note: If not directed to construct a panel plot of time series, I would have*
+*made two separate plots. I did so as a test and the result looked considerably*
+*better because the plots had room to fill the page horizontally.*
+*I've included them as a panel plot nonetheless because its what the*
+*instructions called for.*
+
+```{r, echo=TRUE}
+ par(mfrow=c(1,2))
+  plot(d$Interval, d$Weekday_Average, type="l", xlab = "5-Minute Interval", 
+     main = "Weekday Activity Patterns", 
+     ylab = "Average number of steps", 
+     ylim =c(0, 250))
+  plot(d$Interval, d$Weekend_Average, type="l", xlab = "5-Minute Interval", 
+     main = "Weekend Activity Patterns", 
+     ylab = "Average number of steps", 
+     ylim =c(0, 250))
+```
+
+The plots indicate a difference in activity patterns between weekdays and
+weekends. There appears to be more activity overall on weekends. However,
+there is a spike in activity on weekdays around the 800 and 850 intervals
+(most likely 835 based on the previous tasks) that exceeds what we see at
+any given weekend interval.
