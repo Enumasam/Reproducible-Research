@@ -24,8 +24,6 @@ if (!file.exists("./activity.csv")) {
 }
 ```
 
-![Plot1](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot1.png)
-
 Next we need to read the data into R. We'll save it in a variable named actmon
 (activity monitor).
 
@@ -77,6 +75,8 @@ hist(tsteps$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency",
      main= "Histogram of Total Steps per Day")
 ```
 
+![Plot1](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot1.png)
+
 **Calculate and report the mean and median of the total number of steps taken**
 **per day**
 
@@ -104,6 +104,8 @@ dayact <- aggregate(comactmon$steps, list(Interval=comactmon$interval), mean)
 plot(x=dayact$Interval, y=dayact$x, type="l", xlab="5 Minute Interval",
      ylab="Average Number of Steps", main="Average Number of Steps")
 ```
+
+![Plot2](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot2.png)
 
 **Which 5-minute interval, on average across all the days in the dataset,**
 **contains the maximum number of steps?**
@@ -172,6 +174,8 @@ library(datasets)
 hist(filldata$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency", 
      main= "Histogram of Total Steps per Day, NAs replaced")
 ```
+
+![Plot3](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot3.png)
 
 As before, we can find the mean (10766.19) and median (10766.19) of the data
 with their respective functions.
@@ -258,6 +262,8 @@ to appropriate values so that the plots are readable.
      ylab = "Average number of steps", 
      ylim =c(0, 250))
 ```
+
+![Plot4](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot4.png)
 
 The plots indicate a difference in activity patterns between weekdays and
 weekends. There appears to be more activity overall on weekends. However,
