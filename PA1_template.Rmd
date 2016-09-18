@@ -176,7 +176,7 @@ hist(filldata$x, breaks=25, col="red", xlab="Number of Steps", ylab="Frequency",
 
 ![Plot3](https://github.com/Enumasam/Reproducible-Research/blob/master/Images/plot3.png)
 
-As before, we can find the mean (10766.19) and median (10766.19) of the data
+As before, we can find the mean **(10766.19)** and median **(10766.19)** of the data
 with their respective functions.
 
 ```{r, echo=TRUE}
